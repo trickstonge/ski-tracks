@@ -16,12 +16,15 @@
 	//converts json to js object
 	const tracks = {{ Js::from($tracks) }};
 
-	//make labels for all dates, with earliest and latest found. Hard coding leap year.
-	const year = new Date().getFullYear();
-	const earliest = new Date('10/27/' + '2023');
-	const latest = new Date('6/10/' + '2024');
-	const xLabels = [];
+    //get list of first and last dates for each season
+    const firstDates = Object.keys(tracks).map((season) => tracks[season][0].date);
+    const lastDates = Object.keys(tracks).map((season) => tracks[season][tracks[season].length - 1].date);
+    //Get earliest and latest dates. Hard coding leap year.
+    const earliest = new Date(Math.min(...firstDates.map((date) => new Date(`2023/${date}`))));
+    const latest = new Date(Math.max(...lastDates.map((date) => new Date(`2024/${date}`))));
+    const xLabels = [];
 
+    //make labels for all dates, with earliest and latest found
 	for (let d = new Date(earliest); d <= latest; d.setDate(d.getDate() + 1)) {
 		const month = (d.getMonth() + 1).toString();
 		const day = d.getDate().toString();
